@@ -15,9 +15,14 @@ build/
 .idea/
 *.csv
 
-# Environment files
+# Environment files (exclude actual .env but keep .env.example)
 server/.env
 frontend/.env
+
+# Keep example files
+!server/.env.example
+!frontend/.env.example
+!frontend/.env.production
 
 # Production builds
 frontend/dist/
@@ -27,3 +32,12 @@ server/build/
 *.tmp
 *.temp
 .cache/
+
+# Training data (not needed in production)
+*.csv
+server/*.csv
+server/train_*.csv
+
+# Model files (should be generated, not committed)
+*.pkl
+server/*.pkl

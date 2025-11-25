@@ -22,7 +22,7 @@ frontend/.env
 # Keep example files
 !server/.env.example
 !frontend/.env.example
-!frontend/.env.production
+
 
 # Production builds
 frontend/dist/

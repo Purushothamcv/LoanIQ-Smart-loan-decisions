@@ -13,4 +13,17 @@ build/
 *.pkl
 .vscode/
 .idea/
-.csv
+*.csv
+
+# Environment files
+server/.env
+frontend/.env
+
+# Production builds
+frontend/dist/
+server/build/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

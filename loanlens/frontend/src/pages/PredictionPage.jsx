@@ -10,9 +10,10 @@ import {
   TrendingUp,
   Calculator
 } from 'lucide-react'
-import axios from 'axios'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { loanApi } from '../services/api'
+import { FORM_STEPS, LOAN_STATUS } from '../config/constants'
 
 const PredictionPage = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const PredictionPage = () => {
 
   const [prediction, setPrediction] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [currentStep, setCurrentStep] = useState(1)
+  const [currentStep, setCurrentStep] = useState(FORM_STEPS.PERSONAL)
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -87,8 +88,8 @@ const PredictionPage = () => {
         Loan_Amount_Term: parseFloat(formData.Loan_Amount_Term)
       }
 
-      const response = await axios.post('/api/predict', submissionData)
-      setPrediction(response.data)
+      const response = await loanApi.predictLoan(submissionData)
+      setPrediction(response)
       toast.success('Prediction completed successfully!')
     } catch (error) {
       console.error('Error:', error)
@@ -374,12 +375,12 @@ const PredictionPage = () => {
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                 className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center ${
-                  prediction.loan_status === 1 
+                  prediction.loan_status === LOAN_STATUS.APPROVED
                     ? 'bg-green-100 text-green-600' 
                     : 'bg-red-100 text-red-600'
                 }`}
               >
-                {prediction.loan_status === 1 ? (
+                {prediction.loan_status === LOAN_STATUS.APPROVED ? (
                   <CheckCircle className="h-10 w-10" />
                 ) : (
                   <XCircle className="h-10 w-10" />
@@ -391,7 +392,7 @@ const PredictionPage = () => {
               </h2>
               
               <p className={`text-xl font-semibold ${
-                prediction.loan_status === 1 ? 'text-green-600' : 'text-red-600'
+                prediction.loan_status === LOAN_STATUS.APPROVED ? 'text-green-600' : 'text-red-600'
               }`}>
                 {prediction.loan_status_text}
               </p>
@@ -400,7 +401,7 @@ const PredictionPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="bg-gray-50 rounded-lg p-6 text-center">
                 <div className="text-2xl font-bold text-gray-900 mb-2">
-                  {prediction.loan_status === 1 ? 'Approved' : 'Rejected'}
+                  {prediction.loan_status === LOAN_STATUS.APPROVED ? 'Approved' : 'Rejected'}
                 </div>
                 <div className="text-gray-600">Status</div>
               </div>

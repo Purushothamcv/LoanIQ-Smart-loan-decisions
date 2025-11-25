@@ -2,17 +2,19 @@ import axios from 'axios'
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8000',
+  baseURL: 'http://localhost:8000',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: false, // Set to false to avoid CORS issues
 })
 
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // You can add auth tokens here if needed
+    console.log('API Request:', config.method?.toUpperCase(), config.url)
+    console.log('Request data:', config.data)
     return config
   },
   (error) => {
@@ -23,14 +25,13 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
+    console.log('API Response:', response.status, response.config.url)
     return response
   },
   (error) => {
-    // Handle common errors
-    if (error.response?.status === 500) {
-      console.error('Server error:', error.response.data)
-    } else if (error.response?.status === 404) {
-      console.error('Endpoint not found:', error.config.url)
+    console.error('API Error:', error)
+    if (error.code === 'ERR_NETWORK') {
+      console.error('Network error - check if backend is running on http://localhost:8000')
     }
     return Promise.reject(error)
   }
